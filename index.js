@@ -36,11 +36,11 @@ const wembed = new Discord.WebEmbed({
   shorten: true,
   hidden: false
 })
-.setColor('#2E3136')
-.setTitle('Premium Advertisement')
-.setDescription('Panda AdBot is a discord bot that constantly sends advertisements to over 200k public discord servers every 15 minutes. Anyone can advertise anything using our bot.\n\n• Full throttle • No downtime • Maximum effect •')
-.setProvider({name: 'Join server to use bot', url: 'https://panda-bot.netlify.app'})
-.setImage('https://cdn.discordapp.com/attachments/1071206219005579306/1071537606971625494/ad_banner.jpeg');
+  .setColor('#2E3136')
+  .setTitle('Premium Advertisement')
+  .setDescription('Panda AdBot is a discord bot that constantly sends advertisements to over 200k public discord servers every 15 minutes. Anyone can advertise anything using our bot.\n\n• Full throttle • No downtime • Maximum effect •')
+  .setProvider({ name: 'Join server to use bot', url: 'https://panda-bot.netlify.app' })
+  .setImage('https://cdn.discordapp.com/attachments/1071206219005579306/1071537606971625494/ad_banner.jpeg');
 
 
 const server = http.createServer((req, res) => {
@@ -62,7 +62,7 @@ client.on("ready", () => {
       originalLog.apply(console, args);
     });
   }
-   // Call the function to start sending messages
+  // Call the function to start sending messages
   scanChannels();
 });
 
@@ -76,12 +76,12 @@ client.on('messageCreate', message => {
 
 // Delay randomizer
 
-function randNum(min, max) {  
+function randNum(min, max) {
   return Math.floor(
     Math.random() * (max - min + 1) + min
-    )
-  }
-  
+  )
+}
+
 // Itterate among channels
 function scanChannels() {
   const https = require('https');
@@ -106,94 +106,94 @@ function scanChannels() {
       })(0);
     });
     // Wait before sending the next message
-            console.log(`Waiting for ${botDelay} seconds before sending the next message...`);
-            if (!messageTaskRunning) return;
-            
-            setTimeout(() => loop(counter + 1), botDelay * 1000);
+    console.log(`Waiting for ${botDelay} seconds before sending the next message...`);
+    if (!messageTaskRunning) return;
+
+    setTimeout(() => loop(counter + 1), botDelay * 1000);
   }).on('error', err => {
     console.error(err);
   });
 }
 
-  
-  // Message function
-  
-  function sendMessageToChannel(channelId) {
-    const channel = client.channels.cache.find(channel => channel.id === channelId);
-    if (!channel) {
-      console.log(`Channel ${channelId} not found`);
-      return;
-    }
-    if(!channel.permissionsFor(client.user).has("SEND_MESSAGES")) {
-      console.log(`Bot does not have permission to send messages in channel ${channelId}`);
-      return;
-    }
-    if(!channel.permissionsFor(client.user).has("EMBED_LINKS")) {
-      console.log(`Bot does not have permission to send Embed in channel ${channelId}`);
-      channel.send(fullmsg).then(() => {
-        console.log(`Invite sent to channel ${channelId}`);
-      }).catch(err => {
-        console.log(`Error sending message to channel ${channelId}: ${err}`);
-      });
-      return;
-    }
-    channel.send({ content: msg, embeds: [wembed]}).then(() => {
-      console.log(`Message sent to channel ${channelId}`);
+
+// Message function
+
+function sendMessageToChannel(channelId) {
+  const channel = client.channels.cache.find(channel => channel.id === channelId);
+  if (!channel) {
+    console.log(`Channel ${channelId} not found`);
+    return;
+  }
+  if (!channel.permissionsFor(client.user).has("SEND_MESSAGES")) {
+    console.log(`Bot does not have permission to send messages in channel ${channelId}`);
+    return;
+  }
+  if (!channel.permissionsFor(client.user).has("EMBED_LINKS")) {
+    console.log(`Bot does not have permission to send Embed in channel ${channelId}`);
+    channel.send(fullmsg).then(() => {
+      console.log(`Invite sent to channel ${channelId}`);
     }).catch(err => {
       console.log(`Error sending message to channel ${channelId}: ${err}`);
     });
+    return;
   }
-  
-  // Function to kill the deployment
-  function killDeployment() {
-    messageTaskRunning = false;
-    counter = 0;
-  }
-  
-  // Commands
-  
-  client.on("messageCreate", (message) => {
-    if (message.content.startsWith("/deploy")) {
-      const args = message.content.split(" ");
-      if (args[1] === "start") {
-        if (messageTaskRunning) {
-          message.channel.send("Ads are running currently, Please wait").then((msg) => {
-            setTimeout(() => {
-              msg.delete();
-            }, 10000);
-          });
-          return;
-        }
-        message.channel.send("Ads Deployed").then((msg) => {
-          setTimeout(() => {
-            msg.delete();
-          }, 10000);
-          messageTaskRunning = true;
-          (function loop(counter) {
-            if (counter >= loopAmount) {
-              console.log('Messages sent: ' + counter);
-              messageTaskRunning = false;
-              return;
-            }
-            
-            console.log(`Initializing new message task`);
-            
-            
-            // Read channels from channels file 
-            
-            scanChannels()
-
-          })(0);
-        });
-      } else if (args[1] === "kill") {
-        message.channel.send("Ads Stopped").then((msg) => {
-          setTimeout(() => {
-            msg.delete();
-          }, 10000);
-          killDeployment();
-        });
-      }
-    }
+  channel.send({ content: msg, embeds: [wembed] }).then(() => {
+    console.log(`Message sent to channel ${channelId}`);
+  }).catch(err => {
+    console.log(`Error sending message to channel ${channelId}: ${err}`);
   });
-  
-  client.login(botToken);
+}
+
+// Function to kill the deployment
+function killDeployment() {
+  messageTaskRunning = false;
+  counter = 0;
+}
+
+// Commands
+
+client.on("messageCreate", (message) => {
+  if (message.content.startsWith("/deploy")) {
+    const args = message.content.split(" ");
+    if (args[1] === "start") {
+      if (messageTaskRunning) {
+        message.channel.send("Ads are running currently, Please wait").then((msg) => {
+          setTimeout(() => {
+            msg.delete();
+          }, 10000);
+        });
+        return;
+      }
+      message.channel.send("Ads Deployed").then((msg) => {
+        setTimeout(() => {
+          msg.delete();
+        }, 10000);
+        messageTaskRunning = true;
+        (function loop(counter) {
+          if (counter >= loopAmount) {
+            console.log('Messages sent: ' + counter);
+            messageTaskRunning = false;
+            return;
+          }
+
+          console.log(`Initializing new message task`);
+
+
+          // Read channels from channels file 
+
+          scanChannels()
+
+        })(0);
+      });
+    } else if (args[1] === "kill") {
+      message.channel.send("Ads Stopped").then((msg) => {
+        setTimeout(() => {
+          msg.delete();
+        }, 10000);
+        killDeployment();
+      });
+    }
+  }
+});
+
+client.login(botToken);
